@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clues by Sam</title>
+
+    <style>
+      * {
+        --label-font: Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif;
+        --name-font: 'Segoe Print', 'Bradley Hand', Chilanka, TSCu_Comic, casual, cursive;
+        --text-font: Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif;
+      font-weight: normal;
+
+        --innocent-color: hsl(120 60% 35%);
+        --criminal-color: hsl(0 60% 40%);
+
+        --card-background: hsl(0 0% 20%);
+        --card-border: 3px solid rgb(255 255 255 / 30%);
+      }
+
+      html, body {
+        overflow: clip;
+      }
+
+      body {
+        background-color: rgb(12, 12, 12);
+
+        width: 100vw;
+        height: 100svh;
+        
+        display: grid;
+        place-items: center;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, 96px);
+        grid-template-rows: repeat(4, 128px);
+        gap: 8px;
+      }
+
+      .card {
+        position: relative;
+        
+        color: white;
+        background: var(--card-background);
+        border: var(--card-border);
+        border-radius: 8px;
+
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        gap: 4px;
+
+        user-select: none;
+
+        &::before {
+          content: attr(data-column)attr(data-row);
+          position: absolute;
+          top: 4px;
+          left: 6px;
+          font-size: 0.75rem;
+        }
+
+        .position {
+          display: none;
+          
+          position: absolute;
+          top: 4px;
+          left: 6px;
+          font-size: 0.75rem;
+        }
+
+        .content {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          text-align: center;
+
+          .emoji {
+            font-size: 2rem;
+          }
+
+          .name {
+            font-family: var(--name-font);
+            font-size: 1rem;
+            background: rgb(0 0 0 / 30%);
+          }
+
+          .career {
+            font-family: var(--label-font);
+            font-size: 0.7rem;
+          }
+        }
+
+        .text {
+          border-top: 1px solid rgb(0 0 0 / 20%);
+          padding: 4px;
+          text-align: center;
+          font-family: var(--text-font);
+          font-size: 0.75rem;
+
+          display: none;
+        }
+      }
+
+      .card.used-clue {
+        .text {
+          color: rgb(255 255 255 / 25%);
+        }
+      }
+
+      .card.innocent {
+        background: var(--innocent-color);
+      }
+
+      .card.criminal {
+        background: var(--criminal-color);
+      }
+
+      .card.innocent, .card.criminal {
+        .emoji {
+          font-size: 0.7rem;
+        }
+        
+        .text {
+          display: block;
+          flex: 1;
+        }
+      }
+
+      dialog {
+        background: var(--card-background);
+        border: var(--card-border);
+        border-radius: 16px;
+        padding: 16px;
+      }
+
+      .dialog-content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        color: white;
+        text-align: center;
+
+        .emoji {
+          font-size: 4rem;
+        }
+
+        .name {
+          font-family: var(--name-font);
+          font-size: 1.5rem;
+        }
+
+        .career {
+          font-family: var(--label-font);
+          font-size: 0.8rem;
+        }
+
+        .button-row {
+          display: flex;
+          gap: 8px;
+          padding: 8px 16px;
+          margin: 0 -16px;
+          background: rgb(0 0 0 / 20%);
+        }
+
+        button {
+          font-size: 1.25rem;
+          padding: 0.25rem;
+          color: white;
+          background: transparent;
+          border: var(--card-border);
+          border-width: 1px;
+          border-radius: 3px;
+        }
+
+        .innocent {
+          --innocent-color: hsl(120 45% 50%);
+          
+          color: var(--innocent-color);
+          border-color: var(--innocent-color);
+        }
+
+        .criminal {
+          --criminal-color: hsl(0 50% 55%);
+          
+          color: var(--criminal-color);
+          border-color: var(--criminal-color);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grid">
+      <div class="card" data-row="1" data-column="A">
+        <div class="content">
+          <div class="emoji">👩‍🎤</div>
+          <div class="name">Amber</div>
+          <div class="career">music therapist</div>
+        </div>
+        <div class="text">Sorry, I have a prior commitment</div>
+      </div>
+
+      <div class="card" data-row="1" data-column="B">
+        <div class="content">
+          <div class="emoji">👨‍💻</div>
+          <div class="name">Arsalaan</div>
+          <div class="career">coder</div>
+        </div>
+        <div class="text">Column C has more innocents than column D</div>
+      </div>
+
+      <div class="card" data-row="1" data-column="C">
+        <div class="content">
+          <div class="emoji">👩‍🏫</div>
+          <div class="name">Ashley</div>
+          <div class="career">teacher</div>
+        </div>
+        <div class="text">There is a criminal coder in row 3</div>
+      </div>
+
+      <div class="card innocent" data-row="1" data-column="D">
+        <div class="content">
+          <div class="emoji">👨‍💻</div>
+          <div class="name">Bob</div>
+          <div class="career">coder</div>
+        </div>
+        <div class="text">Kate is definitely innocent</div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="card" data-row="2" data-column="A">
+        <div class="content">
+          <div class="emoji">👩‍🎓</div>
+          <div class="name">Emma</div>
+          <div class="career">linguist</div>
+        </div>
+        <div class="text">There are 2 criminals left of Ashley</div>
+      </div>
+
+      <div class="card" data-row="2" data-column="B">
+        <div class="content">
+          <div class="emoji">👩‍💻</div>
+          <div class="name">Jenna</div>
+          <div class="career">coder</div>
+        </div>
+        <div class="text">All linguists are innocent</div>
+      </div>
+
+      <div class="card" data-row="2" data-column="C">
+        <div class="content">
+          <div class="emoji">👨‍💻</div>
+          <div class="name">Jimmy</div>
+          <div class="career">coder</div>
+        </div>
+        <div class="text">Jenna and I are moving. Maybe next year ...</div>
+      </div>
+
+      <div class="card" data-row="2" data-column="D">
+        <div class="content">
+          <div class="emoji">🕵️‍♀️</div>
+          <div class="name">Kate</div>
+          <div class="career">ecologist</div>
+        </div>
+        <div class="text">Both coders to my left are guilty</div>
+      </div>
+
+      <!-- Row 3 -->
+      <div class="card" data-row="3" data-column="A">
+        <div class="content">
+          <div class="emoji">👩‍💼</div>
+          <div class="name">Laurel</div>
+          <div class="career">assistant</div>
+        </div>
+        <div class="text">I have been waiting months for Ashley</div>
+      </div>
+
+      <div class="card" data-row="3" data-column="B">
+        <div class="content">
+          <div class="emoji">👨‍💻</div>
+          <div class="name">Michael</div>
+          <div class="career">coder</div>
+        </div>
+        <div class="text">Climbing up a thing, very legally</div>
+      </div>
+
+      <div class="card" data-row="3" data-column="C">
+        <div class="content">
+          <div class="emoji">👩‍💻</div>
+          <div class="name">Mikylah</div>
+          <div class="career">coder</div>
+        </div>
+        <div class="text">I would never rat someone out</div>
+      </div>
+
+      <div class="card" data-row="3" data-column="D">
+        <div class="content">
+          <div class="emoji">👨‍🎨</div>
+          <div class="name">Peter</div>
+          <div class="career">designer</div>
+        </div>
+        <div class="text">I live in France now</div>
+      </div>
+
+      <!-- Row 4 -->
+      <div class="card" data-row="4" data-column="A">
+        <div class="content">
+          <div class="emoji">👨‍🏭</div>
+          <div class="name">Riah</div>
+          <div class="career">jewler</div>
+        </div>
+        <div class="text">One Carlin is innocent in all this</div>
+      </div>
+
+      <div class="card" data-row="4" data-column="B">
+        <div class="content">
+          <div class="emoji">👨‍💻</div>
+          <div class="name">Sam</div>
+          <div class="career">coder</div>
+        </div>
+        <div class="text">I'll see you guys there!</div>
+      </div>
+
+      <div class="card" data-row="4" data-column="C">
+        <div class="content">
+          <div class="emoji">👨‍🏫</div>
+          <div class="name">Sasha</div>
+          <div class="career">teacher</div>
+        </div>
+        <div class="text">Emma only has 1 innocent neighbor</div>
+      </div>
+
+      <div class="card" data-row="4" data-column="D">
+        <div class="content">
+          <div class="emoji">👩‍🔬</div>
+          <div class="name">Soph</div>
+          <div class="career">biologist</div>
+        </div>
+        <div class="text">There is only 1 criminal below Amber</div>
+      </div>
+    </div>
+
+    <dialog id="vote-dialog" popover>
+      <div class="dialog-content">
+        <div class="emoji">👩‍🔬</div>
+        <div class="name">Soph</div>
+        <div class="career">biologist</div>
+  
+        <div class="button-row">
+          <button class="innocent" type="button">Innocent</button>
+          <button class="criminal" type="button">Criminal</button>
+        </div>
+        
+        <button commandfor="vote-dialog" command="close">Close</button>
+      </div>
+    </dialog>
+    
+    <script>
+      const VERDICT = {
+        A1: false,
+        B1: false,
+        C1: true,
+        D1: true,
+        A2: true,
+        B2: false,
+        C2: false,
+        D2: true,
+        A3: true,
+        B3: false,
+        C3: true,
+        D3: false,
+        A4: false,
+        B4: true,
+        C4: true,
+        D4: false,
+      };
+
+      const dialog = document.getElementById('vote-dialog');
+      const emoji = dialog.querySelector('.emoji');
+      const name = dialog.querySelector('.name');
+      const career = dialog.querySelector('.career');
+      const innocent = dialog.querySelector('.innocent');
+      const criminal = dialog.querySelector('.criminal');
+
+      // Add click handlers
+      [...document.querySelectorAll('.card')].forEach(card => {
+        card.onclick = ({currentTarget: card}) => {
+          if (card.classList.contains('innocent') || card.classList.contains('criminal')) {
+            card.classList.toggle('used-clue');
+            return;
+          }
+          
+          const id = `${card.dataset.column}${card.dataset.row}`;
+
+          emoji.innerText = card.querySelector('.emoji').innerText;
+          name.innerText = card.querySelector('.name').innerText;
+          career.innerText = card.querySelector('.career').innerText;
+
+          innocent.onclick = () => {
+            if (VERDICT[id]) card.classList.add('innocent');
+            
+            dialog.close();
+          }
+
+          criminal.onclick = () => {
+            if (!VERDICT[id]) card.classList.add('criminal');
+            
+            dialog.close();
+          }
+
+          dialog.showModal();
+        };
+      });
+    </script>
+  </body>
+</html>
